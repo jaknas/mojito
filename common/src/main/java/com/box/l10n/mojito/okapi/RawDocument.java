@@ -1,6 +1,5 @@
 package com.box.l10n.mojito.okapi;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URI;
@@ -24,18 +23,19 @@ public class RawDocument extends net.sf.okapi.common.resource.RawDocument {
   }
 
   public RawDocument(CharSequence inputCharSequence, LocaleId sourceLocale, LocaleId targetLocale) {
-    super(
-        new ByteArrayInputStream(inputCharSequence.toString().getBytes(StandardCharsets.UTF_8)),
-        StandardCharsets.UTF_8.name().toLowerCase(),
-        sourceLocale,
-        targetLocale);
+    super(inputCharSequence, sourceLocale, targetLocale);
 
     Field inputURIField = ReflectionUtils.findField(RawDocument.class, "inputURI");
     ReflectionUtils.makeAccessible(inputURIField);
 
+    Field encoding = ReflectionUtils.findField(RawDocument.class, "encoding");
+    ReflectionUtils.makeAccessible(encoding);
+
     try {
       URI fakeUri = new URI("/some/file/path/to/be/read/from/db");
       ReflectionUtils.setField(inputURIField, this, fakeUri);
+
+      ReflectionUtils.setField(encoding, this, StandardCharsets.UTF_8.name().toLowerCase());
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }

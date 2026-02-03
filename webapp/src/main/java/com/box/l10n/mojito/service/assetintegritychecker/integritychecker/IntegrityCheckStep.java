@@ -4,8 +4,6 @@ import com.box.l10n.mojito.entity.Asset;
 import com.box.l10n.mojito.entity.TMTextUnit;
 import com.box.l10n.mojito.entity.TMTextUnitVariantComment;
 import com.box.l10n.mojito.service.tm.TMTextUnitRepository;
-import com.google.common.io.CharStreams;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,13 +65,7 @@ public class IntegrityCheckStep extends BasePipelineStep {
   protected Event handleStartDocument(Event event) {
     logger.debug("Check integrity of document");
 
-    String documentContent = null;
-    try {
-      documentContent = CharStreams.toString(rawDocument.getReader());
-    } catch (IOException e) {
-      logger.error("Error reading document content", e);
-      throw new RuntimeException("Error reading document content", e);
-    }
+    String documentContent = rawDocument.getInputCharSequence().toString();
 
     // TODO(P1): do not hardcode the type here
     List<DocumentIntegrityChecker> documentIntegrityCheckers =
