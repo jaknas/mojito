@@ -40,14 +40,4 @@ public class RawDocument extends net.sf.okapi.common.resource.RawDocument {
       throw new RuntimeException(e);
     }
   }
-
-  /**
-   * Returns a fake output URI to be used where the Okapi class were modify to work with streams
-   * instead of files.
-   *
-   * @return a fake output URI form streams
-   */
-  public static URI getFakeOutputURIForStream() {
-    return new File("fakeOuputURIForStream-" + UUID.randomUUID()).toURI();
-  }
 }

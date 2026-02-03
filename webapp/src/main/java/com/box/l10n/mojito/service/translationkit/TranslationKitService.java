@@ -97,8 +97,8 @@ public class TranslationKitService {
     logger.trace(
         "Prepare FilterEventsWriterStep to use an XLIFFWriter with outputstream (allows only one doc to be processed)");
     FilterEventsWriterStep filterEventsWriterStep = new FilterEventsWriterStep(xliffWriter);
-    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    filterEventsWriterStep.setOutputStream(byteArrayOutputStream);
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    filterEventsWriterStep.setOutputStream(outputStream);
     filterEventsWriterStep.setOutputEncoding(StandardCharsets.UTF_8.toString());
 
     TranslationKitStep tksStep = new TranslationKitStep(translationKit.getId());
@@ -112,18 +112,18 @@ public class TranslationKitService {
 
     logger.trace("Add single document with fake output URI to be processed with an outputStream");
     Locale locale = localeService.findById(localeId);
-    RawDocument rawDocument =
+    RawDocument outputDocument =
         new RawDocument(
             RawDocument.EMPTY, LocaleId.ENGLISH, LocaleId.fromBCP47(locale.getBcp47Tag()));
 
-    driver.addBatchItem(rawDocument, RawDocument.getFakeOutputURIForStream(), null);
+    driver.addBatchItem(outputDocument);
 
     logger.debug("Start processing batch");
     driver.processBatch();
 
     logger.trace("Get the output result from the stream");
     TranslationKitAsXliff translationKitAsXliff = new TranslationKitAsXliff();
-    translationKitAsXliff.setContent(StreamUtil.getUTF8OutputStreamAsString(byteArrayOutputStream));
+    translationKitAsXliff.setContent(StreamUtil.getUTF8OutputStreamAsString(outputStream));
     translationKitAsXliff.setTranslationKitId(translationKit.getId());
     translationKitAsXliff.setEmpty(tksStep.wordCount < 1);
 

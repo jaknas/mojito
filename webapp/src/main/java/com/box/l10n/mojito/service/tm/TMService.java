@@ -901,8 +901,8 @@ public class TMService {
     logger.debug(
         "Prepare FilterEventsWriterStep to use an XLIFFWriter with outputstream (allows only one doc to be processed)");
     FilterEventsWriterStep filterEventsWriterStep = new FilterEventsWriterStep(new XLIFFWriter());
-    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    filterEventsWriterStep.setOutputStream(byteArrayOutputStream);
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    filterEventsWriterStep.setOutputStream(outputStream);
     filterEventsWriterStep.setOutputEncoding(StandardCharsets.UTF_8.toString());
 
     driver.addStep(filterEventsWriterStep);
@@ -913,19 +913,19 @@ public class TMService {
     String targetLanguage = xliffUtils.getTargetLanguage(xliffContent);
     LocaleId targetLocaleId =
         targetLanguage != null ? LocaleId.fromBCP47(targetLanguage) : LocaleId.EMPTY;
-    RawDocument rawDocument = new RawDocument(xliffContent, LocaleId.ENGLISH, targetLocaleId);
+    RawDocument inputDocument = new RawDocument(xliffContent, LocaleId.ENGLISH, targetLocaleId);
 
-    driver.addBatchItem(rawDocument, RawDocument.getFakeOutputURIForStream(), null);
+    driver.addBatchItem(inputDocument);
 
     logger.debug("Start processing batch");
     driver.processBatch();
 
     logger.debug("Get the Import report");
     ImportTranslationsStepAnnotation importTranslationsStepAnnotation =
-        rawDocument.getAnnotation(ImportTranslationsStepAnnotation.class);
+        inputDocument.getAnnotation(ImportTranslationsStepAnnotation.class);
 
     UpdateTMWithXLIFFResult updateReport = new UpdateTMWithXLIFFResult();
-    updateReport.setXliffContent(StreamUtil.getUTF8OutputStreamAsString(byteArrayOutputStream));
+    updateReport.setXliffContent(StreamUtil.getUTF8OutputStreamAsString(outputStream));
     updateReport.setComment(importTranslationsStepAnnotation.getComment());
 
     return updateReport;
@@ -983,11 +983,11 @@ public class TMService {
 
     logger.trace("Add single document with fake output URI to be processed with an outputStream");
     Locale locale = localeService.findByBcp47Tag(bcp47Tag);
-    RawDocument rawDocument =
+    RawDocument outputDocument =
         new RawDocument(
             RawDocument.EMPTY, LocaleId.ENGLISH, LocaleId.fromBCP47(locale.getBcp47Tag()));
 
-    driver.addBatchItem(rawDocument, RawDocument.getFakeOutputURIForStream(), null);
+    driver.addBatchItem(outputDocument);
 
     logger.debug("Start processing batch");
     driver.processBatch();
