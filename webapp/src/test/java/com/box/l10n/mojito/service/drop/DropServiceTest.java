@@ -286,6 +286,49 @@ public class DropServiceTest extends ServiceTestBase {
     checkNumberOfUntranslatedTextUnit(dropTestData, locales, 0);
   }
 
+  //  @Test
+  //  public void directOkapiLargeXliffFile() throws Exception {
+  //    IPipelineDriver driver = new PipelineDriver();
+  //    driver.addStep(new RawDocumentToFilterEventsStep(new XLIFFFilter()));
+  //
+  ////    driver.addStep(getConfiguredQualityStep());
+  //    IntegrityCheckStep integrityCheckStep = new IntegrityCheckStep();
+  //    driver.addStep(integrityCheckStep);
+  ////
+  ////    abstractImportTranslationsStep.setImportWithStatus(importStatus);
+  ////    driver.addStep(abstractImportTranslationsStep);
+  //
+  //    // TODO(P1) It sounds like it's not possible to the XLIFFFilter for the output
+  //    // because the note is readonly mode and we need to override it to provide more information
+  //    logger.debug(
+  //        "Prepare FilterEventsWriterStep to use an XLIFFWriter with outputstream (allows only one doc to be processed)");
+  //    FilterEventsWriterStep filterEventsWriterStep = new FilterEventsWriterStep(new XLIFFWriter());
+  //    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+  //    filterEventsWriterStep.setOutputStream(byteArrayOutputStream);
+  //    filterEventsWriterStep.setOutputEncoding(StandardCharsets.UTF_8.toString());
+  //
+  //    driver.addStep(filterEventsWriterStep);
+  //
+  //    // We need to read first the target language, because if we wait for okapi to read
+  //    // it from the file it is too late to write the output with the XLIFFWriter
+  //    // (missing target language)
+  ////    String targetLanguage = xliffUtils.getTargetLanguage(xliffContent);
+  //    String targetLanguage = "fr-FR";
+  //    LocaleId targetLocaleId =
+  //        targetLanguage != null ? LocaleId.fromBCP47(targetLanguage) : LocaleId.EMPTY;
+  //    String testFilePath = "~/Desktop/large_xliff.xliff";
+  //    String xliffContent = Files.toString(Paths.get(testFilePath).toFile(), StandardCharsets.UTF_8);
+  //    RawDocument rawDocument = new RawDocument(xliffContent, LocaleId.ENGLISH, targetLocaleId);
+  //
+  //    driver.addBatchItem(rawDocument, RawDocument.getFakeOutputURIForStream(), null);
+  //
+  //    logger.debug("Start processing batch");
+  //    driver.processBatch();
+  //
+  //    var output = StreamUtil.getUTF8OutputStreamAsString(byteArrayOutputStream);
+  //    assertEquals(output, xliffContent);
+  //  }
+
   @Test
   public void forReview() throws Exception {
     List<String> locales = List.of("fr-FR", "ko-KR", "ja-JP");
